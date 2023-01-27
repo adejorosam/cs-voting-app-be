@@ -5,6 +5,7 @@
 
 - Postman Collection [CS Voting App Postman](https://documenter.getpostman.com/view/11352997/2s8ZDeSduf)
 
+- Database schema [CS Voting App DB schema](https://dbdiagram.io/d/63d34fa8296d97641d7c7666)
 ## How To Run
 
 - run `git clone https://github.com/adejorosam/cs-voting-app-be`

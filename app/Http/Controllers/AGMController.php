@@ -30,13 +30,13 @@ class AGMController extends Controller
 
         DB::beginTransaction();
         try {
-            $checkCompany = Company::where('user_id', auth()->user()->id)->get();
+            $checkCompany = Company::where('user_id', auth()->user()->id)->first();
 
-            if(is_null($checkCompany)){
+            if(!is_null($checkCompany)){
                 return response([
                     'status' => 'Error',
                     'message' => "You don't have access to create AGM for this company"
-                ], 200);
+                ], 400);
             }
 
             $agm = AGM::create([

@@ -31,6 +31,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/voting-items', [VotingItemController::class, 'store']);
     Route::get('/votes', [VoteController::class, 'index']);
     Route::post('/agm', [AGMController::class, 'store']);
+    Route::post('/company', [ShareholderController::class, 'addCompany']);
+    Route::post('/user/company', [ShareholderController::class, 'addUserToCompany']);
     Route::get('/metrics', [VoteController::class, 'getUsefulMetrics']);
     Route::get('/admin-companies', [ShareholderController::class, 'getAdminCompanies']);
 });

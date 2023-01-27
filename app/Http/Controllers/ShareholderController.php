@@ -6,6 +6,7 @@ use App\Models\Share;
 use App\Models\User;
 use App\Models\Company;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -23,10 +24,10 @@ class ShareholderController extends Controller
     public function getItemsToVoteOn()
     {
         $shareholderCompanies = auth()->user()->shares()->pluck('company_id');
-        $companies = AGM::where('company_id', $shareholderCompanies)->get();
+        $agmItems = AGM::where('company_id', $shareholderCompanies)->get();
         return response([
             'message' => 'List of items per agenda',
-            'data' => $companies
+            'data' => $agmItems
         ], 200);
     }
 
@@ -88,6 +89,87 @@ class ShareholderController extends Controller
             'status' => 'Ok',
             'message' => 'Shareholder added successfully',
             'data' => $user
+        ], 201);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addCompany(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $company = Company::create([
+                'name' => $validated['name'],
+                'acronym' => Str::slug($validated['name']),
+                'user_id' => auth()->user()->id
+            ]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return response([
+                'status' => 'Error',
+                'message' => "Something went wrong! " . $e->getMessage()
+            ], 500);
+        }
+
+        return response([
+            'status' => 'Ok',
+            'message' => 'Company added successfully',
+            'data' => $company
+        ], 201);
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addUserToCompany(Request $request)
+    {
+        $validated = $request->validate([
+            'units' => 'required',
+            'company_id' => 'required|exists:companies,id',
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $shareExist = Share::where(['user_id'=>$validated['user_id'], 'company_id'=>$validated['company_id']])->first();
+            if(!is_null($shareExist)){
+                return response([
+                    'status' => 'Error',
+                    'message' => "A record for this user exists already."
+                ], 400);
+            }
+            $share = Share::create([
+                'units' => $validated['units'],
+                'company_id' => $validated['company_id'],
+                'user_id' => $validated['user_id']
+            ]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return response([
+                'status' => 'Error',
+                'message' => "Something went wrong! " . $e->getMessage()
+            ], 500);
+        }
+
+        return response([
+            'status' => 'Ok',
+            'message' => 'User added to a company successfully',
+            'data' => $share
         ], 201);
     }
 }
