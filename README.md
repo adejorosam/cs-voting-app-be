@@ -1,7 +1,7 @@
 # CS voting app
 
 
-## Postman url
+## Important links
 
 - Postman Collection [CS Voting App Postman](https://documenter.getpostman.com/view/11352997/2s8ZDeSduf)
 
