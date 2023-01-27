@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\VoteResource;
 use App\Models\Share;
-use App\Models\Vote;
 use App\Models\VoteLog;
 use Exception;
 use Illuminate\Http\Request;
@@ -47,6 +46,7 @@ class VoteController extends Controller
         $validated = $request->validate([
             "vote" => 'required',
             "item_id" => 'required|exists:voting_items,id',
+            "company_id" => 'required|exists:companies,id'
         ]);
 
         DB::beginTransaction();
@@ -56,6 +56,15 @@ class VoteController extends Controller
                 throw new Exception("Vote yes or no.");
             }
 
+            //check if he/owns share
+            $shareExist = Share::where(['user_id'=>auth()->user()->id], ['company_id'=>$validated['company_id']])->first();
+            if(is_null($shareExist)){
+                return response([
+                    'status' => 'Error',
+                    'message' => "You do not own a share in this company"
+                ], 400);
+            }
+
             // Check if shareholder has voted before
             $previousVote = VoteLog::where([
                 ["item_id", $request->get('item_id')], 
@@ -63,25 +72,14 @@ class VoteController extends Controller
             )->first();
             
             if (!is_null($previousVote)) {
-                throw new Exception("You have voted already!");
+                return response([
+                    'status' => 'Error',
+                    'message' => "You have voted already"
+                ], 400);
             }
             
-            $numberOfVotes = Share::where("user_id", auth()->user()->id)->get()->sum('units');
-            $vote = Vote::where('item_id', $request->get('item_id'))->first();
-
-            if (is_null($vote)) {
-                Vote::create([
-                    'item_id' => $request->get('item_id'),
-                    'yes' => $request->get('vote') == "yes" ? $numberOfVotes : 0,
-                    'no' => $request->get('vote') == "no" ? $numberOfVotes : 0,
-                ]);
-            } else {
-                $vote->update([
-                    'yes' => $request->get('vote') == "yes" ? $vote->yes + $numberOfVotes : $vote->yes,
-                    'no' => $request->get('vote') == "no" ? $vote->no + $numberOfVotes : $vote->no
-                ]);
-            }
-
+            $numberOfVotes = Share::where(['user_id'=>auth()->user()->id, 'company_id'=>$validated['company_id']])->first()->units;
+         
             VoteLog::create([
                 'item_id' => $request->get('item_id'),
                 'user_id' => auth()->user()->id,

@@ -11,11 +11,6 @@ class VotingItem extends Model
 
     protected $fillable = ["name", "agm_id"];
 
-    public function vote()
-    {
-        return $this->hasOne(Vote::class, 'item_id');
-    }
-
     public function agm()
     {
         return $this->belongsTo(AGM::class);
