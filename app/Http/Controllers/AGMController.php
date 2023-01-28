@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VotingItem;
 use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Http\AddAGMRequest;
 use App\Models\Company;
 use App\Models\AGM;
 use Illuminate\Support\Facades\DB;
@@ -19,14 +19,10 @@ class AGMController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AddAGMRequest $request)
     {
-        $todayDate = date('m/d/Y');
-        $validated = $request->validate([
-            'name' => 'required',
-            'company_id' => 'required|exists:companies,id',
-            'date' => 'required|date_format:Y-m-d|after:'.$todayDate
-        ]);
+
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {
