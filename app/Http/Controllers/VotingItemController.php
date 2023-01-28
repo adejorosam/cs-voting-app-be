@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\VotingItem;
 use Exception;
-use Illuminate\Http\AddVotingItemRequest;
+use Illuminate\Http\Request;
+
+use App\Http\Requests\AddVotingItemRequest;
 use Illuminate\Support\Facades\DB;
 
 class VotingItemController extends Controller
