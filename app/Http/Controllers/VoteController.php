@@ -6,7 +6,8 @@ use App\Http\Resources\VoteResource;
 use App\Models\Share;
 use App\Models\VoteLog;
 use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Http\AddVoteRequest;
+use Illuminate\Http\GetMetricsRequest;
 use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\throwException;
@@ -18,11 +19,9 @@ class VoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getUsefulMetrics(Request $request)
+    public function getUsefulMetrics(GetMetricsRequest $request)
     {
-        $validated = $request->validate([
-            "item_id" => 'required|exists:voting_items,id',
-        ]);
+        $validated = $request->validate();
 
         $yesVotes = VoteLog::where(['vote'=> 'yes', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
         $noVotes = VoteLog::where(['vote'=>'no', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
@@ -41,13 +40,9 @@ class VoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreVoteRequest $request)
+    public function store(AddVoteRequest $request)
     {
-        $validated = $request->validate([
-            "vote" => 'required',
-            "item_id" => 'required|exists:voting_items,id',
-            "company_id" => 'required|exists:companies,id'
-        ]);
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {

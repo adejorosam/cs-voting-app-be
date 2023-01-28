@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddAGMRequest extends FormRequest
+class AddVotingItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,9 @@ class AddAGMRequest extends FormRequest
      */
     public function rules()
     {
-        $todayDate = date('m/d/Y');
         return [
             'name' => 'string|required',
-            'company_id' => 'integer|required|exists:companies,id',
-            'date' => 'required|date_format:Y-m-d|after:'.$todayDate
+            'agm_id' => 'integer|required|exists:agms,id',
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VotingItem;
 use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Http\AddVotingItemRequest;
 use Illuminate\Support\Facades\DB;
 
 class VotingItemController extends Controller
@@ -14,15 +14,12 @@ class VotingItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\AddVotingItemRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AddVotingItemRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'agm_id' => 'required|exists:agms,id',
-        ]);
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {
