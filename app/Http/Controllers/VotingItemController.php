@@ -17,7 +17,7 @@ class VotingItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AddVotingItemRequest $request)
     {
         $validated = $request->validate([
             'name' => 'required',

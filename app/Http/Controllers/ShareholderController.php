@@ -6,6 +6,9 @@ use App\Models\Share;
 use App\Models\User;
 use App\Models\Company;
 use Exception;
+use App\Http\Requests\AddCompanyRequest;
+use App\Http\Requests\AddShareholderRequest;
+use App\Http\Requests\AddUserToCompanyRequest;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,13 +53,9 @@ class ShareholderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AddShareholderRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users',
-            'password' => 'required'
-        ]);
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {
@@ -98,11 +97,9 @@ class ShareholderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addCompany(Request $request)
+    public function addCompany(AddCompanyRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-        ]);
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {
@@ -134,13 +131,9 @@ class ShareholderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addUserToCompany(Request $request)
+    public function addUserToCompany(AddUserToCompanyRequest $request)
     {
-        $validated = $request->validate([
-            'units' => 'required',
-            'company_id' => 'required|exists:companies,id',
-            'user_id' => 'required|exists:users,id'
-        ]);
+        $validated = $request->validate();
 
         DB::beginTransaction();
         try {
@@ -149,6 +142,13 @@ class ShareholderController extends Controller
                 return response([
                     'status' => 'Error',
                     'message' => "A record for this user exists already."
+                ], 400);
+            }
+            $userExist = User::where('id', $validated['user_id'])->first();
+            if(is_null($userExist)){
+                return response([
+                    'status' => 'Error',
+                    'message' => "A record for this user does not exist."
                 ], 400);
             }
             $share = Share::create([
