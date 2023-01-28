@@ -16,7 +16,7 @@ class VotingItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\AddVotingItemRequest  $request
+     * @param  App\Http\Requests\AddVotingItemRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AddVotingItemRequest $request)

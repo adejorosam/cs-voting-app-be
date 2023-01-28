@@ -50,7 +50,7 @@ class ShareholderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\AddShareholderRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AddShareholderRequest $request)
@@ -94,7 +94,7 @@ class ShareholderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\AddCompanyRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function addCompany(AddCompanyRequest $request)
@@ -128,7 +128,7 @@ class ShareholderController extends Controller
      /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\AddUserToCompany  $request
      * @return \Illuminate\Http\Response
      */
     public function addUserToCompany(AddUserToCompanyRequest $request)

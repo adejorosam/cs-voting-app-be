@@ -17,7 +17,7 @@ class AGMController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\AddAGMRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AddAGMRequest $request)

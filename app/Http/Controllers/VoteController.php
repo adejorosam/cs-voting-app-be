@@ -6,8 +6,8 @@ use App\Http\Resources\VoteResource;
 use App\Models\Share;
 use App\Models\VoteLog;
 use Exception;
-use Illuminate\Http\AddVoteRequest;
-use Illuminate\Http\GetMetricsRequest;
+use App\Http\Requests\AddVoteRequest;
+use App\Http\Requests\GetMetricsRequest;
 use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\throwException;
@@ -37,7 +37,7 @@ class VoteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\AddVoteRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AddVoteRequest $request)
