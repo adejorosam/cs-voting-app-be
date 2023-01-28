@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\VotingItem;
 use Exception;
-use Illuminate\Http\AddAGMRequest;
 use App\Models\Company;
+use Illuminate\Http\Request;
 use App\Models\AGM;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AddAGMRequest;
 
 class AGMController extends Controller
 {
@@ -22,13 +23,13 @@ class AGMController extends Controller
     public function store(AddAGMRequest $request)
     {
 
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
             $checkCompany = Company::where('user_id', auth()->user()->id)->first();
 
-            if(!is_null($checkCompany)){
+            if(is_null($checkCompany)){
                 return response([
                     'status' => 'Error',
                     'message' => "You don't have access to create AGM for this company"

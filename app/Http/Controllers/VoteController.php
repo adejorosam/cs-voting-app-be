@@ -21,7 +21,7 @@ class VoteController extends Controller
      */
     public function getUsefulMetrics(GetMetricsRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         $yesVotes = VoteLog::where(['vote'=> 'yes', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
         $noVotes = VoteLog::where(['vote'=>'no', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
@@ -42,7 +42,7 @@ class VoteController extends Controller
      */
     public function store(AddVoteRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {

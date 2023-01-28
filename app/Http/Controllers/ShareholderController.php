@@ -55,7 +55,7 @@ class ShareholderController extends Controller
      */
     public function store(AddShareholderRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
@@ -99,7 +99,7 @@ class ShareholderController extends Controller
      */
     public function addCompany(AddCompanyRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
@@ -133,7 +133,7 @@ class ShareholderController extends Controller
      */
     public function addUserToCompany(AddUserToCompanyRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {

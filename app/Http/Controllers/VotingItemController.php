@@ -19,7 +19,7 @@ class VotingItemController extends Controller
      */
     public function store(AddVotingItemRequest $request)
     {
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
