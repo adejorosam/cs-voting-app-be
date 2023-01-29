@@ -28,7 +28,7 @@ class ShareholderController extends Controller
     {
         $shareholderCompanies = auth()->user()->shares()->pluck('company_id');
 
-        $agmItems = AGM::where('company_id', $shareholderCompanies)->get();
+        $agmItems = AGM::whereIn('company_id', $shareholderCompanies)->get();
 
         return $this->jsonSuccessResponse("List of items per agenda", $agmItems,200);
     }
