@@ -26,12 +26,7 @@ class VoteController extends Controller
         $yesVotes = VoteLog::where(['vote'=> 'yes', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
         $noVotes = VoteLog::where(['vote'=>'no', 'item_id'=>$validated['item_id']])->sum('number_of_vote');
         $totalVotes = VoteLog::where('item_id',$validated['item_id'])->count();
-        return response([
-            'status' => 'Ok',
-            'message' => 'Useful metrics',
-            'data' => [['yes votes'=>$yesVotes], ['no votes'=>$noVotes], ['totalVotes'=>$totalVotes]]
-        ], 201);
-
+        return $this->jsonSuccessResponse("Useful metrics", [['yes votes'=>$yesVotes], ['no votes'=>$noVotes], ['totalVotes'=>$totalVotes]], 200); 
     }
 
     /**
@@ -54,10 +49,7 @@ class VoteController extends Controller
             //check if he/owns share
             $shareExist = Share::where(['user_id'=>auth()->user()->id], ['company_id'=>$validated['company_id']])->first();
             if(is_null($shareExist)){
-                return response([
-                    'status' => 'Error',
-                    'message' => "You do not own a share in this company"
-                ], 400);
+                return $this->jsonErrorResponse("You do not own a share in this company", 400);
             }
 
             // Check if shareholder has voted before
@@ -67,15 +59,13 @@ class VoteController extends Controller
             )->first();
             
             if (!is_null($previousVote)) {
-                return response([
-                    'status' => 'Error',
-                    'message' => "You have voted already"
-                ], 400);
+              
+                return $this->jsonErrorResponse("You have voted already", 400);
             }
             
             $numberOfVotes = Share::where(['user_id'=>auth()->user()->id, 'company_id'=>$validated['company_id']])->first()->units;
          
-            VoteLog::create([
+            $vote = VoteLog::create([
                 'item_id' => $request->get('item_id'),
                 'user_id' => auth()->user()->id,
                 'number_of_vote' => $numberOfVotes,
@@ -84,15 +74,9 @@ class VoteController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            return response([
-                'status' => 'Error',
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->jsonErrorResponse("Something went wrong! " . $e->getMessage(), 500);
         }
 
-        return response([
-            'status' => 'Ok',
-            'message' => 'You have successfully casted your vote!'
-        ], 201);
+        return $this->jsonSuccessResponse("Voting item created successfully", $vote, 201); 
     }
 }

@@ -10,10 +10,11 @@ use App\Models\AGM;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\AddAGMRequest;
 
+
 class AGMController extends Controller
 {
 
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -30,10 +31,7 @@ class AGMController extends Controller
             $checkCompany = Company::where('user_id', auth()->user()->id)->first();
 
             if(is_null($checkCompany)){
-                return response([
-                    'status' => 'Error',
-                    'message' => "You don't have access to create AGM for this company"
-                ], 400);
+                return $this->jsonErrorResponse("You don't have access to create AGM for this company",400);
             }
 
             $agm = AGM::create([
@@ -46,16 +44,9 @@ class AGMController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            return response([
-                'status' => 'Error',
-                'message' => "Something went wrong! " . $e->getMessage()
-            ], 500);
+            return $this->jsonErrorResponse("Something went wrong! " . $e->getMessage(),500);
         }
 
-        return response([
-            'status' => 'Ok',
-            'message' => 'AGM added successfully',
-            'data' => $agm
-        ], 201);
+        return $this->jsonSuccessResponse("AGM added successfully",$agm, 201);
     }
 }

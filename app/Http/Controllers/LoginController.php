@@ -20,10 +20,8 @@ class LoginController extends Controller
 
         // Check password
         if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return response([
-                'status' => 'Error',
-                'message' => 'Bad Credentials',
-            ], 401);
+        
+            return $this->jsonErrorResponse("Bad credentials",400);
         }
 
         $token = $user->createToken('app_token')->plainTextToken;

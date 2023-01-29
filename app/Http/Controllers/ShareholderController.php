@@ -27,11 +27,10 @@ class ShareholderController extends Controller
     public function getItemsToVoteOn()
     {
         $shareholderCompanies = auth()->user()->shares()->pluck('company_id');
+
         $agmItems = AGM::where('company_id', $shareholderCompanies)->get();
-        return response([
-            'message' => 'List of items per agenda',
-            'data' => $agmItems
-        ], 200);
+
+        return $this->jsonSuccessResponse("List of items per agenda", $agmItems,200);
     }
 
     /**
@@ -42,10 +41,7 @@ class ShareholderController extends Controller
     public function getAdminCompanies()
     {
         $companies = Company::where('user_id',auth()->user()->id)->get();
-        return response([
-            'message' => 'List of companies that belongs to an admin',
-            'data' => $companies
-        ], 200);
+        return $this->jsonSuccessResponse("List of companies that belongs to an admin", $companies,200);
     }
     /**
      * Store a newly created resource in storage.
@@ -78,17 +74,12 @@ class ShareholderController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            return response([
-                'status' => 'Error',
-                'message' => "Something went wrong! " . $e->getMessage()
-            ], 500);
+            return $this->jsonErrorResponse("Something went wrong! " . $e->getMessage(), 500);
+          
         }
-
-        return response([
-            'status' => 'Ok',
-            'message' => 'Shareholder added successfully',
-            'data' => $user
-        ], 201);
+        
+        return $this->jsonSuccessResponse("Shareholder added successfully", $user,201);
+       
     }
 
     /**
@@ -112,10 +103,8 @@ class ShareholderController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            return response([
-                'status' => 'Error',
-                'message' => "Something went wrong! " . $e->getMessage()
-            ], 500);
+            return $this->jsonErrorResponse("Something went wrong! " . $e->getMessage(), 500);
+            
         }
 
         return response([
@@ -139,17 +128,12 @@ class ShareholderController extends Controller
         try {
             $shareExist = Share::where(['user_id'=>$validated['user_id'], 'company_id'=>$validated['company_id']])->first();
             if(!is_null($shareExist)){
-                return response([
-                    'status' => 'Error',
-                    'message' => "A record for this user exists already."
-                ], 400);
+                return $this->jsonErrorResponse("A record for this user exists already.",400);  
             }
             $userExist = User::where('id', $validated['user_id'])->first();
             if(is_null($userExist)){
-                return response([
-                    'status' => 'Error',
-                    'message' => "A record for this user does not exist."
-                ], 400);
+                return $this->jsonErrorResponse("A record for this user does not exist.",400);
+              
             }
             $share = Share::create([
                 'units' => $validated['units'],
@@ -160,16 +144,8 @@ class ShareholderController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            return response([
-                'status' => 'Error',
-                'message' => "Something went wrong! " . $e->getMessage()
-            ], 500);
+           return $this->jsonErrorResponse("Something went wrong! " . $e->getMessage(), 500);
         }
-
-        return response([
-            'status' => 'Ok',
-            'message' => 'User added to a company successfully',
-            'data' => $share
-        ], 201);
+        return $this->jsonSuccessResponse("User added to a company successfully",$share, 201);
     }
 }
