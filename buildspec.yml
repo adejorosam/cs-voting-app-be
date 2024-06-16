@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      php: 8.1 # or the version you're using
+    commands:
+      - echo Installing PHP dependencies...
+      - composer install --no-interaction --prefer-dist --optimize-autoloader
+  pre_build:
+    commands:
+      - echo Running pre-build commands...
+  build:
+    commands:
+      - echo Running build commands...
+      - php artisan config:cache
+      - php artisan route:cache
+      - php artisan view:cache
+      - php artisan migrate --force
+  post_build:
+    commands:
+      - echo Build completed.
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+  base-directory: /var/www/html/cs-voting-app-be # Change this to your Laravel project's root directory
