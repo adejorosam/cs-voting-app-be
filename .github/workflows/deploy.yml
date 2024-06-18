@@ -34,7 +34,7 @@ jobs:
           echo "${SSH_PRIVATE_KEY}" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.AWS_INSTANCE_IP }} << 'EOF'
-            cd /var/www/html
+            cd /var/www/html/cs-voting-app-be
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
