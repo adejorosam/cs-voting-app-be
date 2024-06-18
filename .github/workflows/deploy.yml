@@ -37,10 +37,6 @@ jobs:
             cd /var/www/html/cs-voting-app-be
             git pull origin main
             composer update
-            sudo chown -R www-data:www-data storage
-            sudo chown -R www-data:www-data bootstrap/cache
-            sudo chmod -R 775 storage
-            sudo chmod -R 775 bootstrap/cache
             php artisan migrate --force
             php artisan optimize
           EOF
